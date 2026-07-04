@@ -27,6 +27,7 @@ debug-*.mjs
 
 # CDK
 infra/cdk/cdk.out/
+infra/cdk/cdk.context.json
 infra/cdk/node_modules/
 
 # OS
