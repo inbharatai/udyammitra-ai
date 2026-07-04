@@ -17,6 +17,15 @@ export interface UdyammitraStackProps extends cdk.StackProps {
   readonly frontendRepoUrl?: string;
   /** GitHub repo URL for the backend (used for App Runner source if not building from ECR). */
   readonly backendRepoUrl?: string;
+  /**
+   * Phase-1/phase-2 toggle to avoid the ECR↔App Runner chicken-and-egg.
+   * Phase 1: set ENABLE_APP_RUNNER=false → creates ECR + Aurora + Secrets +
+   *   Amplify + Lambda (no App Runner). Push the image to ECR, then:
+   * Phase 2: ENABLE_APP_RUNNER=true (default) → adds App Runner, which now
+   *   finds the image in ECR. Defaults to true so a single `cdk deploy` after
+   *   the image exists "just works".
+   */
+  readonly enableAppRunner?: boolean;
 }
 
 /**
@@ -101,6 +110,7 @@ export class UdyammitraStack extends cdk.Stack {
     // L1 construct for explicit, stable control of the VPC connector + secret
     // env-var wiring. Build & push the image to ECR first (CodeBuild or
     // `docker push`), then set ImageIdentifier below to <repo>:<tag>.
+    if (props.enableAppRunner !== false) {
     const vpcConnector = new apprunner.CfnVpcConnector(this, "AppRunnerVpcConn", {
       subnets: vpc.isolatedSubnets.map((s) => s.subnetId),
       securityGroups: [dbCluster.connections.securityGroups[0].securityGroupId],
@@ -183,6 +193,7 @@ export class UdyammitraStack extends cdk.Stack {
       },
     });
     new cdk.CfnOutput(this, "AppRunnerServiceArn", { value: appRunnerService.attrServiceArn });
+    } // end enableAppRunner
 
     // ------------------------------------------------------------ Amplify (frontend)
     if (props.frontendRepoUrl) {
