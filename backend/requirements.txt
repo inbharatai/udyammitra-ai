@@ -9,3 +9,7 @@ pytest>=8.2
 httpx>=0.27
 # Postgres driver for Aurora (prod). SQLite stays the local default.
 psycopg2-binary>=2.9
+
+# AWS SDK — used to read the Aurora credential secret at startup when
+# DB_SECRET is set (AWS deploy). Local dev does not need it.
+boto3>=1.34

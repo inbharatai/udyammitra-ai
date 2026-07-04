@@ -105,6 +105,7 @@ export class UdyammitraStack extends cdk.Stack {
       imageScanOnPush: true,
       lifecycleRules: [{ maxImageCount: 10 }],
     });
+    new cdk.CfnOutput(this, "EcrRepoUri", { value: repo.repositoryUri });
 
     // ----------------------------------------------------------- App Runner
     // L1 construct for explicit, stable control of the VPC connector + secret
@@ -155,15 +156,14 @@ export class UdyammitraStack extends cdk.Stack {
               { name: "OPENAI_MODEL", value: "gpt-4o-mini" },
               { name: "OPENAI_DISABLED", value: "false" },
               { name: "CORS_ORIGINS", value: "https://placeholder.amplify.app" },
-              // Set at deploy time to the Aurora connection string, resolved
-              // from the DbSecretArn output:
-              //   postgresql+psycopg2://<user>:<pass>@<DbClusterEndpoint>:5432/udyammitra
-              // (or enhance app.core.config to compose it from DB_SECRET.)
+              // Sentinel: app.core.config composes the real URL from DB_SECRET
+              // (the Aurora credential secret) at startup — no hand-built URL.
               { name: "DATABASE_URL", value: "postgresql+psycopg2://SET_AT_DEPLOY" },
             ],
             runtimeEnvironmentSecrets: [
               { name: "OPENAI_API_KEY", value: openaiSecret.secretArn },
               { name: "CONNECTOR_CREDS", value: connectorSecret.secretArn },
+              // DB_SECRET is read by app.core.config to build DATABASE_URL.
               { name: "DB_SECRET", value: dbSecret.secretArn },
             ],
           },
@@ -193,6 +193,7 @@ export class UdyammitraStack extends cdk.Stack {
       },
     });
     new cdk.CfnOutput(this, "AppRunnerServiceArn", { value: appRunnerService.attrServiceArn });
+    new cdk.CfnOutput(this, "AppRunnerServiceUrl", { value: appRunnerService.attrServiceUrl });
     } // end enableAppRunner
 
     // ------------------------------------------------------------ Amplify (frontend)

@@ -48,6 +48,37 @@ class Settings(BaseSettings):
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
 
 
+# Sentinel value used in the CDK stack when DATABASE_URL should be composed from
+# the Aurora credential secret (DB_SECRET) at runtime instead of being set
+# directly. Lets the AWS deploy avoid hand-building a Postgres connection URL.
+_DB_URL_SENTINEL = "postgresql+psycopg2://SET_AT_DEPLOY"
+
+
+def _compose_db_url_from_secret(secret_arn: str) -> str | None:
+    """Read an RDS credential secret (JSON) and build a psycopg2 URL.
+
+    Returns None if the secret can't be read/parsed so the caller can fall back
+    to the existing DATABASE_URL / SQLite default. Only invoked when DB_SECRET
+    is set (AWS deploy); local dev never hits this path.
+    """
+    try:
+        import boto3  # local import so dev installs without boto3
+        import json as _json
+
+        region = os.environ.get("AWS_REGION") or os.environ.get("AWS_DEFAULT_REGION") or "ap-south-1"
+        client = boto3.client("secretsmanager", region_name=region)
+        raw = client.get_secret_value(SecretId=secret_arn)["SecretString"]
+        s = _json.loads(raw)
+        user = s["username"]
+        pwd = s["password"]
+        host = s["host"]
+        port = s.get("port", 5432)
+        dbname = s.get("dbname") or "udyammitra"
+        return f"postgresql+psycopg2://{user}:{pwd}@{host}:{port}/{dbname}"
+    except Exception:
+        return None
+
+
 @lru_cache
 def get_settings() -> Settings:
     # Also read from a root .env if present (developer convenience).
@@ -61,6 +92,17 @@ def get_settings() -> Settings:
             k, v = k.strip(), v.strip()
             if not os.environ.get(k):
                 os.environ[k] = v
+
+    # AWS deploy: if DATABASE_URL is unset or the deploy sentinel, compose it
+    # from the Aurora credential secret (DB_SECRET env = secret ARN, injected
+    # by App Runner). Local dev leaves DB_SECRET unset → SQLite default stands.
+    db_url = os.environ.get("DATABASE_URL", "")
+    db_secret_arn = os.environ.get("DB_SECRET", "").strip()
+    if db_secret_arn and (not db_url or db_url == _DB_URL_SENTINEL):
+        composed = _compose_db_url_from_secret(db_secret_arn)
+        if composed:
+            os.environ["DATABASE_URL"] = composed
+
     return Settings()
 
 
