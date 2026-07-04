@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --idbi-blue: #003b73;
+  --idbi-orange: #f7931e;
+}
+
+html, body { background: #f5f8fc; color: #0b1f33; }
+
+/* Thin scrollbars for trace panel */
+.trace-scroll::-webkit-scrollbar { width: 6px; height: 6px; }
+.trace-scroll::-webkit-scrollbar-thumb { background: #c5d6e8; border-radius: 3px; }
+
+@keyframes pulseDot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.live-dot { animation: pulseDot 1.2s infinite; }
+
+/* Print: only the report */
+@media print {
+  body * { visibility: hidden; }
+  #print-report, #print-report * { visibility: visible; }
+  #print-report { position: absolute; left: 0; top: 0; width: 100%; }
+  .no-print { display: none !important; }
+}

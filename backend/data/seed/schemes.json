@@ -1,0 +1,124 @@
+{
+  "schemes": [
+    {
+      "code": "CGTMSE",
+      "name": "Credit Guarantee Trust for Micro & Small Enterprises",
+      "type": "credit_guarantee",
+      "min_turnover_lakh": 0,
+      "max_loan_lakh": 500,
+      "stages": ["startup", "growth", "mature"],
+      "sectors": ["all"],
+      "purpose": "Collateral-free working capital / term loan up to ₹5 crore (modified scheme).",
+      "highlights": ["Collateral-free up to ₹5 cr", "Guarantee cover 75-85%", "Annual guarantee fee"],
+      "best_for": "MSMEs needing credit without hard collateral"
+    },
+    {
+      "code": "MUDRA-SHISHU",
+      "name": "Pradhan Mantri Mudra Yojana — Shishu",
+      "type": "term_loan",
+      "min_turnover_lakh": 0,
+      "max_loan_lakh": 1,
+      "stages": ["startup"],
+      "sectors": ["all"],
+      "purpose": "Loan up to ₹50,000 for micro ventures.",
+      "highlights": ["Up to ₹50,000", "Working capital or business loan"],
+      "best_for": "New micro businesses"
+    },
+    {
+      "code": "MUDRA-KISHORE",
+      "name": "Pradhan Mantri Mudra Yojana — Kishore",
+      "type": "term_loan",
+      "min_turnover_lakh": 5,
+      "max_loan_lakh": 10,
+      "stages": ["startup", "growth"],
+      "sectors": ["all"],
+      "purpose": "Loan ₹50,001–₹5 lakh for small business expansion.",
+      "highlights": ["₹50k–₹5 lakh", "Expansion capex"],
+      "best_for": "Early-stage growth"
+    },
+    {
+      "code": "MUDRA-TARUN",
+      "name": "Pradhan Mantri Mudra Yojana — Tarun",
+      "type": "term_loan",
+      "min_turnover_lakh": 25,
+      "max_loan_lakh": 100,
+      "stages": ["growth", "mature"],
+      "sectors": ["all"],
+      "purpose": "Loan up to ₹10 lakh for established MSMEs.",
+      "highlights": ["Up to ₹10 lakh", "Capex + working capital"],
+      "best_for": "Established MSME capex"
+    },
+    {
+      "code": "PM-VISHWAKARMA",
+      "name": "PM Vishwakarma Scheme",
+      "type": "term_loan",
+      "min_turnover_lakh": 0,
+      "max_loan_lakh": 30,
+      "stages": ["startup", "growth"],
+      "sectors": ["Handicrafts", "Manufacturing", "Textile"],
+      "purpose": "Collateral-free up to ₹3 lakh (tranche I ₹1L + II ₹2L) at 5% interest for artisans.",
+      "highlights": ["5% interest", "Collateral-free", "Toolkit + skill training"],
+      "best_for": "Artisans & traditional craftspeople"
+    },
+    {
+      "code": "PMEGP",
+      "name": "Prime Minister's Employment Generation Programme",
+      "type": "term_loan",
+      "min_turnover_lakh": 0,
+      "max_loan_lakh": 250,
+      "stages": ["startup"],
+      "sectors": ["Manufacturing", "Food Processing", "Handicrafts", "Services"],
+      "purpose": "Margin money subsidy (15-35%) on project cost up to ₹50 lakh (manufacturing).",
+      "highlights": ["Subsidy 15-35%", "New unit setup"],
+      "best_for": "New manufacturing/processing units"
+    },
+    {
+      "code": "RAMP",
+      "name": "Raising & Accelerating MSME Performance",
+      "type": "advisory",
+      "min_turnover_lakh": 0,
+      "max_loan_lakh": 0,
+      "stages": ["growth", "mature"],
+      "sectors": ["all"],
+      "purpose": "World Bank-supported program for MSME capacity, tech upgradation & ZED certification.",
+      "highlights": ["Tech upgradation", "ZED certification", "Market access"],
+      "best_for": "Growth-stage MSMEs improving competitiveness"
+    },
+    {
+      "code": "IDBI-MSME-WC",
+      "name": "IDBI Bank MSME Working Capital (OD/CC)",
+      "type": "working_capital",
+      "min_turnover_lakh": 25,
+      "max_loan_lakh": 1000,
+      "stages": ["growth", "mature"],
+      "sectors": ["all"],
+      "purpose": "Overdraft / Cash Credit limit against drawing power for working-capital needs.",
+      "highlights": ["Sanctioned limit per DP", "Interest on utilisation", "Rotating facility"],
+      "best_for": "MSMEs with GST + banking transactions needing WC"
+    },
+    {
+      "code": "IDBI-INVOICE-DISCOUNT",
+      "name": "IDBI Bill/Invoice Discounting",
+      "type": "invoice_discounting",
+      "min_turnover_lakh": 50,
+      "max_loan_lakh": 500,
+      "stages": ["growth", "mature"],
+      "sectors": ["Manufacturing", "Textile", "Food Processing", "Retail Trading", "Services", "Handicrafts"],
+      "purpose": "Discount GST invoices of blue-chip buyers to bridge receivables gap.",
+      "highlights": ["Up to 90% of invoice", "Quick liquidity", "Receivables-backed"],
+      "best_for": "MSMEs with delayed receivables from rated buyers"
+    },
+    {
+      "code": "IDBI-MSME-TERM",
+      "name": "IDBI MSME Smart Term Loan",
+      "type": "term_loan",
+      "min_turnover_lakh": 50,
+      "max_loan_lakh": 750,
+      "stages": ["growth", "mature"],
+      "sectors": ["all"],
+      "purpose": "Term loan for capex — plant, machinery, expansion.",
+      "highlights": ["Tenor up to 7-10 yrs", "Competitive rate", "Moratorium available"],
+      "best_for": "Capex / capacity expansion"
+    }
+  ]
+}

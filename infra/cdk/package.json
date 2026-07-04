@@ -1,0 +1,25 @@
+{
+  "name": "udyammitra-cdk",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AWS CDK stack for UdyamMitra AI (App Runner + Aurora Serverless v2 + Amplify + connectors).",
+  "bin": {
+    "udyammitra": "bin/udyammitra.ts"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "synth": "cdk synth",
+    "deploy": "cdk deploy",
+    "diff": "cdk diff",
+    "destroy": "cdk destroy"
+  },
+  "devDependencies": {
+    "aws-cdk": "^2.160.0",
+    "typescript": "^5.5.0",
+    "@types/node": "^20.0.0"
+  },
+  "dependencies": {
+    "aws-cdk-lib": "^2.160.0",
+    "constructs": "^10.3.0"
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "app": "npx ts-node bin/udyammitra.ts",
+  "watch": false,
+  "context": {
+    "@aws-cdk/aws-rds:lowercaseDbName": true
+  }
+}
