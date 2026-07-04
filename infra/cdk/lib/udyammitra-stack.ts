@@ -40,10 +40,12 @@ export class UdyammitraStack extends cdk.Stack {
     // ---------------------------------------------------------------- Network
     const vpc = new ec2.Vpc(this, "Vpc", {
       maxAzs: 2,
-      natGateways: 1, // cost control for a hackathon; bump to 2 for HA in prod
+      // CHEAP MODE: no NAT gateway (~$32/mo saved). App Runner reaches Aurora
+      // intra-VPC via the VPC connector (no internet needed); the ingestion
+      // Lambda runs outside the VPC so it keeps default internet access.
+      natGateways: 0,
       subnetConfiguration: [
         { name: "public", subnetType: ec2.SubnetType.PUBLIC },
-        { name: "private", subnetType: ec2.SubnetType.PRIVATE_WITH_EGRESS },
         { name: "isolated", subnetType: ec2.SubnetType.PRIVATE_ISOLATED },
       ],
     });
@@ -100,7 +102,7 @@ export class UdyammitraStack extends cdk.Stack {
     // env-var wiring. Build & push the image to ECR first (CodeBuild or
     // `docker push`), then set ImageIdentifier below to <repo>:<tag>.
     const vpcConnector = new apprunner.CfnVpcConnector(this, "AppRunnerVpcConn", {
-      subnets: vpc.privateSubnets.map((s) => s.subnetId),
+      subnets: vpc.isolatedSubnets.map((s) => s.subnetId),
       securityGroups: [dbCluster.connections.securityGroups[0].securityGroupId],
     });
 
@@ -121,8 +123,17 @@ export class UdyammitraStack extends cdk.Stack {
     connectorSecret.grantRead(instanceRole);
     dbSecret.grantRead(instanceRole);
 
+    // CHEAP MODE: scale-to-zero when idle (cold start ~30s). Bump minSize to 1
+    // for an always-warm live demo (standard mode).
+    const autoScaling = new apprunner.CfnAutoScalingConfiguration(this, "AutoScaling", {
+      autoScalingConfigurationName: "udyammitra-autoscaling",
+      minSize: 0,
+      maxSize: 2,
+    });
+
     const appRunnerService = new apprunner.CfnService(this, "Backend", {
       serviceName: "udyammitra-backend",
+      autoScalingConfigurationArn: autoScaling.attrAutoScalingConfigurationArn,
       sourceConfiguration: {
         imageRepository: {
           imageIdentifier: `${repo.repositoryUri}:latest`,
