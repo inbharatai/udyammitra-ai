@@ -68,6 +68,8 @@ export class UdyammitraStack extends cdk.Stack {
       engine: rds.DatabaseClusterEngine.auroraPostgres({
         version: rds.AuroraPostgresEngineVersion.VER_16_3,
       }),
+      // Serverless v2 writer — scales 0.5→4 ACU, cheapest baseline (~$10–15/mo).
+      writer: rds.ClusterInstance.serverlessV2("writer"),
       serverlessV2MinCapacity: 0.5,
       serverlessV2MaxCapacity: 4,
       defaultDatabaseName: "udyammitra",
@@ -162,11 +164,11 @@ export class UdyammitraStack extends cdk.Stack {
         interval: 10,
       },
       networkConfiguration: {
-        egressConfiguration: { egressType: "VPC" },
-        ingressConfiguration: { isPubliclyAccessible: true },
-        vpcConnectorConfiguration: {
-          vpcConnectorId: vpcConnector.attrVpcConnectorId,
+        egressConfiguration: {
+          egressType: "VPC",
+          vpcConnectorArn: vpcConnector.attrVpcConnectorArn,
         },
+        ingressConfiguration: { isPubliclyAccessible: true },
       },
     });
     new cdk.CfnOutput(this, "AppRunnerServiceArn", { value: appRunnerService.attrServiceArn });
@@ -197,7 +199,6 @@ export class UdyammitraStack extends cdk.Stack {
             },
           ],
         }),
-        enableBasicAuth: false,
       });
       new amplify.CfnBranch(this, "FrontendMain", {
         appId: amplifyApp.attrAppId,
